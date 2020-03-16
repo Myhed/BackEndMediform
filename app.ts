@@ -4,14 +4,9 @@ import * as cookieParser from 'cookie-parser'
 import cors = require('cors')
 import express = require('express')
 import {authentification} from './middleware/authentification'
+import {createConnection} from './middleware/initDatabase'
 import { initLoggerMiddleware } from './middleware/logger'
-import Categorie from './router/esport/categorie'
-import Jeu from './router/esport/jeu'
-import login from './router/esport/login'
-import Style from './router/esport/style'
-import Team from './router/esport/team'
-import Tournoi from './router/esport/tournoi'
-import User from './router/esport/user'
+import { patientRouter } from './router'
 import { httpLogger, logger } from './utils/logger'
 // Middleware global
 const app: express.Application = express()
@@ -20,7 +15,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Powered-By', 'HIA')
   next()
 })
-
+app.use(createConnection)
 app.use(cors())
 app.use(cookieParser.default())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -29,27 +24,20 @@ app.use(initLoggerMiddleware)
 // app.use(authentification)
 // ----- FIN Middleware global ------
 
-// Router esport
-app.use('/esport', User)
-app.use('/esport', Jeu)
-app.use('/esport', Team)
-app.use('/esport', Tournoi)
-app.use('/esport', Categorie)
-app.use('/esport', Categorie)
-app.use('/esport', Style)
-
+// Router Mediform
+app.use('/mediform',patientRouter)
 // ------ Fin Router esport ------
 
-// login esport/mediform
-app.use('/esport', login)
+// login mediform
+// app.use('/esport', login)
 
-// ------ Fin login esport/mediform ------
+// ------ Fin login mediform ------
 
 app.get('/',(req,res) => {
   res.send('Welcom to the apis HIA')
 })
 
-app.get(['/*','/esport/*','/mediform/*'],(req,res) => {
+app.get(['/*','/mediform/*'],(req,res) => {
   res.status(404).send('Resource Not Found')
   httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('info', 'Ressource not found')
 })
@@ -61,8 +49,8 @@ app.use((err,req,res,next) => {
 })
 // ------ Fin Error middleware ------
 
-const port = process.env.PORT || 7000
+const port = process.env.PORT || 6000
 
 app.listen(port, () => {
-  logger.log('info','Server started')
+  logger.log('info',`Server started ${port}`)
 })

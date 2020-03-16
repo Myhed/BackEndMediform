@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { Pool } from 'mysql'
 
-export interface RequestWithCustomAttachement extends Request {
+export interface CustomRequest extends Request {
   hashMac: string
   db: Pool
 }
