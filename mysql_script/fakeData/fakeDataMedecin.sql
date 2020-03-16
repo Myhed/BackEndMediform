@@ -1,0 +1,2 @@
+INSERT INTO `MEDECINS` (id_medecin,nom,prenom,ville,profession,adresse) VALUES(null,'Michu','juliette','Asnière-sur-seine','ORL','1 Rue charles linnée');
+INSERT INTO `MEDECINS`  (id_medecin,nom,prenom,ville,profession,adresse) VALUES(null,'Donald','George','Fontenay-aux-rose','medecin generaliste','1 Rue charles linnée');

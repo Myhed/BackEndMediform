@@ -1,0 +1,2 @@
+INSERT INTO `PATIENTS` (id_patient,nom,prenom,ville,tel,adresse) VALUES(null,'Ben-Rhouma','Myhed','Asnière-sur-seine','0621198058','1 Rue charles linnée');
+INSERT INTO `PATIENTS`  (id_patient,nom,prenom,ville,tel,adresse) VALUES(null,'Grumelon','Dylan','Fontenay-aux-rose','0640606927','1 Rue charles linnée');

@@ -1,24 +1,33 @@
+DROP DATABASE IF EXISTS mediform;
 CREATE DATABASE mediform;
 use mediform;
 
+DROP TABLE IF EXISTS PATIENTS;
+DROP TABLE IF EXISTS MEDECINS;
+DROP TABLE IF EXISTS AFFILE;
+DROP TABLE IF EXISTS RDV;
+DROP TABLE IF EXISTS PREND;
+DROP TABLE IF EXISTS FORMULAIRE;
+
 CREATE TABLE PATIENTS(
-    id_patient INT(255),
+    id_patient INT(255) AUTO_INCREMENT,
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
     ville VARCHAR(255) not null,
-    profession VARCHAR(255) not null,
+    tel VARCHAR(255) not null,
     adresse VARCHAR(255) not null,
-    dateTimestamp TIMESTAMP null,
+    dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_patient)
 );
 
 CREATE TABLE MEDECINS(
-    id_medecin INT(255),
+    id_medecin INT(255) AUTO_INCREMENT,
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
     ville VARCHAR(255) not null,
     profession VARCHAR(255) not null,
     adresse VARCHAR(255) not null,
+    dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_medecin)
 );
 
@@ -33,7 +42,7 @@ CREATE TABLE AFFILE(
 
 
 CREATE TABLE RDV(
-    id_rdv INT(255),
+    id_rdv INT(255) AUTO_INCREMENT,
     typeRdv ENUM('consultation','operation') DEFAULT null,
     lieu VARCHAR(255) not null,
     sujetConsultation VARCHAR(255) not null,
@@ -50,7 +59,7 @@ CREATE TABLE PREND(
 );
 
 CREATE TABLE FORMULAIRE(
-    id_form INT(255),
+    id_form INT(255) AUTO_INCREMENT,
     id_rdv INT(255),
     questions TEXT not null,
     CONSTRAINT `fk_id_rdv_form` FOREIGN KEY(`id_rdv`) REFERENCES RDV(`id_rdv`),

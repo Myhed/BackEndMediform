@@ -6,7 +6,7 @@ import express = require('express')
 import {authentification} from './middleware/authentification'
 import {createConnection} from './middleware/initDatabase'
 import { initLoggerMiddleware } from './middleware/logger'
-import { patientRouter } from './router'
+import { patientRouter,medecinRouter } from './router'
 import { httpLogger, logger } from './utils/logger'
 // Middleware global
 const app: express.Application = express()
@@ -26,6 +26,7 @@ app.use(initLoggerMiddleware)
 
 // Router Mediform
 app.use('/mediform',patientRouter)
+app.use('/mediform',medecinRouter)
 // ------ Fin Router esport ------
 
 // login mediform

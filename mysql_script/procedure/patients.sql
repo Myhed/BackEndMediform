@@ -1,4 +1,5 @@
 DROP PROCEDURE IF EXISTS P_getPatientById;
+DROP PROCEDURE IF EXISTS P_getAllPatients;
 
 DELIMITER |
 
@@ -12,7 +13,7 @@ DELIMITER |
             COMMIT;
         END;
     
-    CREATE PROCEDURE P_getAllPatient()
+    CREATE PROCEDURE P_getAllPatients()
         BEGIN
             START TRANSACTION;
                 SELECT * FROM `PATIENTS`;

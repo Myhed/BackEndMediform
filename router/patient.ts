@@ -2,8 +2,8 @@ import express = require('express')
 import {Request,Response} from 'express'
 import {CustomRequest} from '../interfaces/request'
 import {mysqlPromiseQuery} from '../utils/mysql-promise'
-const patientRouter: express.Router = express.Router()
 
+const patientRouter: express.Router = express.Router()
 
 patientRouter.get('/patients',(req:CustomRequest,res: Response) => {
     const AllPatient = mysqlPromiseQuery(req.db,'CALL P_getAllPatient()')

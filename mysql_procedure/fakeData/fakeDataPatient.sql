@@ -1,5 +1,0 @@
-DELIMITER |
-
-    INSERT INTO PATIENT PATIENT VALUES(null,'','','')
-
-END |

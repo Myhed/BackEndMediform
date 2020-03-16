@@ -1,3 +1,3 @@
 import patientRouter from './patient'
-
-export { patientRouter }
+import medecinRouter from './medecin'
+export { patientRouter,medecinRouter }
