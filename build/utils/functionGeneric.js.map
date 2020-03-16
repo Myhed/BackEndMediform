@@ -1,0 +1,1 @@
+{"version":3,"file":"functionGeneric.js","sourceRoot":"","sources":["../../utils/functionGeneric.ts"],"names":[],"mappings":";;AAEA,mDAAiD;AAE1C,KAAK,UAAU,YAAY,CAAC,EAAc,EAAE,MAAc,EAAE,KAAa,EAAE,UAAkB;IAChG,MAAM,MAAM,GAAgB,MAAM,iCAAiB,CAAC,EAAE,EAAE,UAAU,MAAM,oBAAoB,KAAK,IAAI,UAAU,EAAE,CAAC,CAAA;IAElH,OAAO,MAAM,CAAA;AACjB,CAAC;AAJD,oCAIC"}

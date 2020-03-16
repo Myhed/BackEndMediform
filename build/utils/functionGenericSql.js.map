@@ -1,0 +1,1 @@
+{"version":3,"file":"functionGenericSql.js","sourceRoot":"","sources":["../../utils/functionGenericSql.ts"],"names":[],"mappings":";;AAEA,mDAAiD;AAE1C,KAAK,UAAU,YAAY,CAAC,EAAc,EAAE,SAAiB,EAAE,kBAA0B,EAAE,UAAkB;IAChH,MAAM,MAAM,GAAgB,MAAM,iCAAiB,CAAC,EAAE,EAAE,UAAU,SAAS,oBAAoB,kBAAkB,IAAI,UAAU,EAAE,CAAC,CAAA;IAClI,OAAO,MAAM,CAAA;AACjB,CAAC;AAHD,oCAGC"}
