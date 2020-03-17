@@ -5,8 +5,8 @@ import {mysqlPromiseQuery} from '../utils/mysql-promise'
 
 const patientRouter: express.Router = express.Router()
 
-patientRouter.get('/patients',(req:CustomRequest,res: Response) => {
-    const AllPatient = mysqlPromiseQuery(req.db,'CALL P_getAllPatient()')
+patientRouter.get('/patients', async (req:CustomRequest,res: Response) => {
+    const AllPatient = await mysqlPromiseQuery(req.db,'CALL P_getAllPatient()')
     res.status(200).send(JSON.stringify(AllPatient))
 })
 
