@@ -6,6 +6,4 @@ DELMITER |
             START TRANSACTION;
                 SELECT `patients`.`prenom`
         END;
-
-
 END |

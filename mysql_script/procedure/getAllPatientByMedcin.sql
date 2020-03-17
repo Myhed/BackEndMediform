@@ -22,7 +22,7 @@ INNER JOIN (`RDV`, `PREND`)
 ON `RDV`.`id_rdv` = `PREND`.`id_rdv`
 AND `PATIENTS`.`id_patient` = `PREND`.`id_patient`
 WHERE `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`
-AND `MEDECINS`.`id_medecin` = 1 -- le 1 est la variable --
+AND `MEDECINS`.`id_medecin` = 1; -- le 1 est la variable --
 
 -- PRENDRE TOUT LES RDV d'aujourd'hui d'un medecin
 
@@ -36,4 +36,4 @@ INNER JOIN (`RDV`, `PREND`)
 ON `RDV`.`id_rdv` = `PREND`.`id_rdv`
 AND `PATIENTS`.`id_patient` = `PREND`.`id_patient`
 WHERE `PREND`.`dateRdv` = NOW()
-AND `MEDECINS`.`id_medecin` = 1
+AND `MEDECINS`.`id_medecin` = 1;

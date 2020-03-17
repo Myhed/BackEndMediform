@@ -43,8 +43,9 @@ CREATE TABLE AFFILE(
 
 CREATE TABLE RDV(
     id_rdv INT(255) AUTO_INCREMENT,
+    nomHopital VARCHAR(255) not null,
     typeRdv ENUM('consultation','operation') DEFAULT null,
-    lieu VARCHAR(255) not null,
+    adresse VARCHAR(255) not null,
     sujetConsultation VARCHAR(255) not null,
     PRIMARY KEY(id_rdv)
 );

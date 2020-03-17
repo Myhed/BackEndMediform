@@ -3,10 +3,10 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import cors = require('cors')
 import express = require('express')
-import {authentification} from './middleware/authentification'
-import {createConnection} from './middleware/initDatabase'
+import { authentification } from './middleware/authentification'
+import { createConnection } from './middleware/initDatabase'
 import { initLoggerMiddleware } from './middleware/logger'
-import { patientRouter,medecinRouter } from './router'
+import { medecinRouter,patientRouter } from './router'
 import { httpLogger, logger } from './utils/logger'
 // Middleware global
 const app: express.Application = express()
