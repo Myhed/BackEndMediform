@@ -2,15 +2,15 @@ import { add, addColors, createLogger, format, Logger, transports } from 'winsto
 import { IOptPrintLogger } from '../interfaces/logger'
 const { combine, timestamp, printf, colorize } = format
 
-const myFormat = printf(({ level, method, nameApp, chunkOriginalUrl, statusCode, message, timestamp }) => {
-  if (typeof method !== 'undefined' && typeof nameApp !== 'undefined') {
-    return `${timestamp} [ ${nameApp} ] - ${method} ${chunkOriginalUrl} ${statusCode || ''} ${level}: ${message}`
+const loggerFormatMediform = printf(({ level, method, chunkOriginalUrl, statusCode, message, timestamp }) => {
+  if (typeof method !== 'undefined') {
+    return `${timestamp} [ MEDIFORM ] - ${method} ${chunkOriginalUrl} ${statusCode || ''} ${level}: ${message}`
   }
   return `${timestamp} ${level}: ${message}`
 })
 
 export const logger: Logger = createLogger({
-  format: combine(colorize(), timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }), myFormat),
+  format: combine(colorize(), timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }), loggerFormatMediform),
   level: process.env.LEVEL,
   transports: [new transports.Console()],
 })

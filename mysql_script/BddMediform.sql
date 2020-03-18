@@ -32,12 +32,13 @@ CREATE TABLE MEDECINS(
 );
 
 CREATE TABLE AFFILE(
-    id_medecin INT(255),
-    id_patient INT(255),
+    id_affiliation INT(255) AUTO_INCREMENT,
+    id_medecin INT(255) not null,
+    id_patient INT(255) not null,
     dateAffiliation DATETIME not null,
     CONSTRAINT `fk_id_medecin` FOREIGN KEY(`id_medecin`) REFERENCES MEDECINS(`id_medecin`),
     CONSTRAINT `fk_id_patient` FOREIGN KEY(`id_patient`) REFERENCES PATIENTS(`id_patient`),
-    PRIMARY KEY(id_medecin,id_patient)
+    PRIMARY KEY(id_affiliation)
 );
 
 

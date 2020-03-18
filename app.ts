@@ -46,7 +46,8 @@ app.get(['/*','/mediform/*'],(req,res) => {
 
 // Error middleware
 app.use((err,req,res,next) => {
-  res.status(err.code).send(err.message)
+  res.status(err.code).send(err)
+  httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('error',err.message)
   next()
 })
 // ------ Fin Error middleware ------

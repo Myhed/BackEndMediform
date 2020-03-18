@@ -18,6 +18,7 @@
     "fakeDataMedecins":"mysql -u root -p mediform < ./mysql_script/fakeData/fakeDataMedecin.sql",
     "fakeDataRdv":"mysql -u root -p mediform < ./mysql_script/fakeData/fakeDataRdv.sql",
     "fakeDataPrend":"mysql -u root -p mediform < ./mysql_script/fakeData/fakeDataPrend.sql",
+    "functionMedecins":"mysql -u root -p mediform < ./mysql_script/functions/medecins.sql",
     "allProcedure": "npm run procedurePatients && npm run procedureMedecins && npm run procedureRdvs",
     "allFakeData":"npm run fakeDataPatients && npm run fakeDataMedecins && npm run fakeDataAffile && npm run fakeDataRdv && npm run fakeDataPrend",
     "integrateDatabase":"npm run Bdd && npm run allFakeData && npm run allProcedure",

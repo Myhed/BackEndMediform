@@ -112,5 +112,4 @@ DELIMITER |
             WHERE `PATIENTS`.`id_patient` = id_patient 
             AND DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE();
           COMMIT;
-    END;
 END |
