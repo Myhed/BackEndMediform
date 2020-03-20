@@ -11,6 +11,10 @@ rdvRouter.get('/rdv', async (req:CustomRequest,res: Response) => {
     res.status(200).send(JSON.stringify(rdv))
 })
 
+rdvRouter.post('/rdv',(req: CustomRequest, res: Response) => {
+    
+})
+
 rdvRouter.get('/rdv/today', async (req:CustomRequest,res: Response) => {
     const rdvToday = await mysqlPromiseQuery(req.db,'CALL P_getAllRdvToday()')
     httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('info', `Resource with param ${JSON.stringify(req.params)}`)

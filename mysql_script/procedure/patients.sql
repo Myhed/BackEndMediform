@@ -31,31 +31,30 @@ DELIMITER |
             END;
         START TRANSACTION;
           IF(
-              (ville is NULL OR ville = "")   AND 
-              (prenom is NULL OR prenom = "") AND 
-              (nom is NULL OR nom = "")       AND
-              (tel is NULL OR tel = "")       AND 
-              (adresse is NULL OR adresse = "")
+              (ville is NULL)  AND 
+              (prenom is NULL) AND 
+              (nom is NULL)    AND
+              (tel is NULL)    AND 
+              (adresse is NULL)
               ) THEN
-              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "ALL PARAMS IS INVALIDE";
+              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "PARAMS MUST NOT BE NULL";
           ELSE
-            IF (nom is NULL OR nom = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "nom MUST BE VARCHAR TYPE";
+            IF (nom = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "nom MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(prenom is NULL OR prenom = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "prenom MUST BE VARCHAR TYPE";
+            IF(prenom = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "prenom MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(ville is NULL OR ville = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "ville MUST BE VARCHAR TYPE";
+            IF(ville = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "ville MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(tel is NULL OR tel = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "tel MUST BE VARCHAR TYPE";
+            IF(tel = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "tel MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(adresse is NULL OR adresse = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE";
+            IF(adresse = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
           END IF;
-
           INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`adresse`) VALUES(null, nom, prenom, ville, tel, adresse);
         COMMIT;
 

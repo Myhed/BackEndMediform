@@ -16,7 +16,8 @@ DROP PROCEDURE IF EXISTS P_getRdvMedecinById;
 DROP PROCEDURE IF EXISTS P_getRdvMedecinTodayById;
 DROP PROCEDURE IF EXISTS P_getRdvPatient;
 DROP PROCEDURE IF EXISTS P_getRdvPatientById;
-
+DROP PROCEDURE IF EXISTS getDateLastRdvMedecin;
+DROP PROCEDURE IF EXISTS insertRdv;
 
 DELIMITER |
     -- get ALL RDV
@@ -35,7 +36,7 @@ DELIMITER |
                 AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
                 WHERE DATE_FORMAT(`AFFILE`.`dateAffiliation`, '%Y-%m-%d %H:%i') = DATE_FORMAT(`PREND`.`dateRdv`, '%Y-%m-%d %H:%i');
             COMMIT;
-        END;
+    END;
     CREATE PROCEDURE P_getAllRdvToday()
         DETERMINISTIC
         BEGIN
@@ -51,7 +52,7 @@ DELIMITER |
                 AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
                 WHERE DATE(`PREND`.`dateRdv`) = CURRENT_DATE();
             COMMIT;
-        END;
+    END;
     CREATE PROCEDURE P_getRdvMedecinById(IN id_medecin INT)
         NOT DETERMINISTIC
         BEGIN 
@@ -71,7 +72,7 @@ DELIMITER |
             WHERE DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE()
             AND `MEDECINS`.`id_medecin` = id_medecin;
           COMMIT;
-        END;
+    END;
     CREATE PROCEDURE P_getRdvMedecinTodayById(IN id_medecin INT)
         NOT DETERMINISTIC
         BEGIN 
@@ -91,7 +92,7 @@ DELIMITER |
             WHERE DATE(`PREND`.`dateRDV`) = CURRENT_DATE()
             AND `MEDECINS`.`id_medecin` = id_medecin;
           COMMIT;
-        END;
+    END;
         
     CREATE PROCEDURE P_getRdvPatientById(IN id_patient INT)
         NOT DETERMINISTIC
@@ -112,4 +113,13 @@ DELIMITER |
             WHERE `PATIENTS`.`id_patient` = id_patient 
             AND DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE();
           COMMIT;
+    END;
+    -- les tables concernet MEDECINS  ====> AFFILE <===== PATIENTS ====> PREND <===== RDV
+    CREATE PROCEDURE insertRdv()
+        NOT DETERMINISTIC
+        BEGIN
+          DECLARE lastRdvInsert INT DEFAULT NULL;
+          DECLARE idMedecin INT DEFAULT NULL;
+            SET idMedecin = F_getIdMedecinByHisProfession('ORL');
+            SELECT idMedecin;
 END |

@@ -14,8 +14,9 @@ CREATE TABLE PATIENTS(
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
     ville VARCHAR(255) not null,
-    tel VARCHAR(255) not null,
-    adresse VARCHAR(255) not null,
+    tel VARCHAR(255) not null UNIQUE,
+    adresse VARCHAR(255) not null UNIQUE,
+    dateNaissance DATE not null,
     dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_patient)
 );
@@ -24,9 +25,9 @@ CREATE TABLE MEDECINS(
     id_medecin INT(255) AUTO_INCREMENT,
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
+    adresse VARCHAR(255) not null UNIQUE,
     ville VARCHAR(255) not null,
     profession VARCHAR(255) not null,
-    adresse VARCHAR(255) not null,
     dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_medecin)
 );

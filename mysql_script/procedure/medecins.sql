@@ -1,6 +1,7 @@
 DROP PROCEDURE IF EXISTS P_getMedecinById;
 DROP PROCEDURE IF EXISTS P_getAllMedecins;
 DROP PROCEDURE IF EXISTS P_insertMedecin;
+DROP PROCEDURE IF EXISTS P_verifyIsStillInRdv;
 DELIMITER |
 
     CREATE PROCEDURE P_getMedecinById(IN id_medecin INT)
@@ -30,31 +31,41 @@ DELIMITER |
         
         START TRANSACTION;
           IF(
-              (ville is NULL OR ville = "")   AND 
-              (prenom is NULL OR prenom = "") AND 
-              (nom is NULL OR nom = "")       AND
-              (profession is NULL OR profession = "") AND 
-              (adresse is NULL OR adresse = "")
+              (ville is NULL)      AND 
+              (prenom is NULL)     AND 
+              (nom is NULL)        AND
+              (profession is NULL) AND 
+              (adresse is NULL)
               ) THEN
-              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "ALL PARAMS IS INVALIDE";
+              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "PARAMS MUST NOT BE NULL";
           ELSE
-            IF (nom is NULL OR nom = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "nom MUST BE VARCHAR TYPE";
+            IF (nom = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "nom MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(prenom is NULL OR prenom = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "prenom MUST BE VARCHAR TYPE";
+            IF(prenom = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "prenom MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(ville is NULL OR ville = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "ville MUST BE VARCHAR TYPE";
+            IF(ville = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "ville MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(profession is NULL OR profession = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "profession MUST BE VARCHAR TYPE";
+            IF(profession = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "profession MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
-            IF(adresse is NULL OR adresse = "") THEN
-             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE";
+            IF(adresse = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
           END IF;
-
           INSERT INTO `MEDECINS` (`id_medecin`,`nom`,`prenom`,`ville`,`profession`,`adresse`) VALUES(null, nom, prenom, ville, profession, adresse);
         COMMIT;
+    END;
+    CREATE PROCEDURE P_verifyIsStillInRdv(IN dateAffiliation DATETIME)
+      DETERMINISTIC
+      BEGIN
+        DECLARE isInRdv BOOLEAN DEFAULT NULL;
+         IF (dateAffiliation IS NULL OR dateAffiliation = "") THEN
+          SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "INVALIDE PARAMETER NEED TO GIVE REAL VALUE DATE LIKE DATE,DATETIME TYPE";
+        END IF;
+        SET isInRdv = F_verifyDateIsExceed(dateAffiliation);
+        SELECT isInRdv;
+        
 END |
