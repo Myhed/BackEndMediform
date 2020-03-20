@@ -115,11 +115,31 @@ DELIMITER |
           COMMIT;
     END;
     -- les tables concernet MEDECINS  ====> AFFILE <===== PATIENTS ====> PREND <===== RDV
-    CREATE PROCEDURE insertRdv()
+    CREATE PROCEDURE insertRdv(
+      IN id_patient INT,
+      IN nomHopital VARCHAR(255),
+      IN typeRdv VARCHAR(255),
+      IN adresse VARCHAR(255),
+      IN sujetConsultation VARCHAR(255),
+      IN serviceHopital VARCHAR(255)
+    )
         NOT DETERMINISTIC
         BEGIN
-          DECLARE lastRdvInsert INT DEFAULT NULL;
+          DECLARE lastInsertIdRdv INT DEFAULT NULL;
           DECLARE idMedecin INT DEFAULT NULL;
-            SET idMedecin = F_getIdMedecinByHisProfession('ORL');
-            SELECT idMedecin;
+          DECLARE dateRdv DATETIME DEFAULT NULL;
+
+          SET idMedecin = F_getIdMedecinByHisProfession(serviceHopital);
+          SET dateRdv = ADDTIME(NOW(),3 * 1000);
+          START TRANSACTION;
+            INSERT INTO `RDV` (`id_rdv`,`nomHopital`,`typeRdv`,`adresse`,`sujetConsultation`)
+            VALUES(null,nomHopital,typeRdv,adresse,sujetConsultation);
+            SET lastInsertIdRdv = LAST_INSERT_ID();
+            INSERT INTO `PREND` (`id_rdv`,`id_patient`,`dateRdv`)
+            VALUES(lastInsertIdRdv,id_patient,dateRdv);
+
+            INSERT INTO `AFFILE` (`id_affiliation`,`id_medecin`,`id_patient`,`dateAffiliation`)
+            VALUES(null,idMedecin,id_patient,dateRdv);
+          COMMIT;
+          SELECT idMedecin;
 END |
