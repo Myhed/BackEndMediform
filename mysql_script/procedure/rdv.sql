@@ -95,7 +95,9 @@ DELIMITER |
     END;
         
     CREATE PROCEDURE P_getRdvPatientById(IN id_patient INT)
-        NOT DETERMINISTIC
+        LANGUAGE SQL
+        READS SQL DATA
+        DETERMINISTIC
         BEGIN 
           IF(id_patient IS NULL) THEN
             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "id_patient must not be NULL"; 
@@ -105,13 +107,13 @@ DELIMITER |
             SELECT `RDV`.`sujetConsultation`,`RDV`.`typeRdv`,`PREND`.`dateRdv`,
             `MEDECINS`.`nom` AS `nomMedecin` ,`MEDECINS`.`prenom` AS `prenomMedecin` 
             FROM `RDV` INNER JOIN (`PREND`,`PATIENTS`)
-            ON `RDV`.`id_rdv` = `PREND`.`id_rdv`
-            AND `PATIENTS`.`id_patient` = `PREND`.`id_patient`
+            ON `PREND`.`id_rdv` = `RDV`.`id_rdv` 
+            AND `PREND`.`id_patient` = `PATIENTS`.`id_patient`
             INNER JOIN (`MEDECINS`,`AFFILE`)
-            ON `MEDECINS`.`id_medecin` = `AFFILE`.`id_medecin`
-            AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
-            WHERE `PATIENTS`.`id_patient` = id_patient 
-            AND DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE();
+            ON `AFFILE`.`id_medecin` = `MEDECINS`.`id_medecin`
+            AND `AFFILE`.`id_patient` = `PATIENTS`.`id_patient`
+            WHERE DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE() 
+            AND `PATIENTS`.`id_patient` = id_patient;
           COMMIT;
     END;
     -- les tables concernet MEDECINS  ====> AFFILE <===== PATIENTS ====> PREND <===== RDV

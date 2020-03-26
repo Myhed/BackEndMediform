@@ -58,7 +58,7 @@ CREATE TABLE PREND(
     dateRdv DATETIME not null,
     CONSTRAINT `fk_id_rdv_prend` FOREIGN KEY(`id_rdv`) REFERENCES RDV(`id_rdv`),
     CONSTRAINT `fk_id_patient_prend` FOREIGN KEY(`id_patient`) REFERENCES PATIENTS(`id_patient`),
-    PRIMARY KEY(id_rdv)
+    PRIMARY KEY(id_rdv,id_patient)
 );
 
 CREATE TABLE FORMULAIRE(

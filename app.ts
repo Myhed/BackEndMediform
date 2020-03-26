@@ -52,7 +52,7 @@ app.use((err,req,res,next) => {
 })
 // ------ Fin Error middleware ------
 
-const port = process.env.PORT || 6000
+const port = process.env.PORT || 8000
 
 app.listen(port, () => {
   logger.log('info',`Server started ${port}`)
