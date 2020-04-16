@@ -36,9 +36,11 @@ CREATE TABLE AFFILE(
     id_affiliation INT(255) AUTO_INCREMENT,
     id_medecin INT(255) not null,
     id_patient INT(255) not null,
-    dateAffiliation DATETIME not null,
+    dateAffiliation BIGINT not null,
+    dateFinAffiliation BIGINT not null,
     CONSTRAINT `fk_id_medecin` FOREIGN KEY(`id_medecin`) REFERENCES MEDECINS(`id_medecin`),
     CONSTRAINT `fk_id_patient` FOREIGN KEY(`id_patient`) REFERENCES PATIENTS(`id_patient`),
+    INDEX `affile_date_affiliation` (dateAffiliation),
     PRIMARY KEY(id_affiliation)
 );
 
@@ -55,9 +57,10 @@ CREATE TABLE RDV(
 CREATE TABLE PREND(
     id_rdv INT(255),
     id_patient INT(255),
-    dateRdv DATETIME not null,
-    CONSTRAINT `fk_id_rdv_prend` FOREIGN KEY(`id_rdv`) REFERENCES RDV(`id_rdv`),
-    CONSTRAINT `fk_id_patient_prend` FOREIGN KEY(`id_patient`) REFERENCES PATIENTS(`id_patient`),
+    dateRdv BIGINT not null,
+    CONSTRAINT `fk_id_rdv_prend` FOREIGN KEY(id_rdv) REFERENCES RDV(`id_rdv`),
+    CONSTRAINT `fk_id_patient_prend` FOREIGN KEY(id_patient) REFERENCES PATIENTS(`id_patient`),
+    INDEX `prend_dateRdv` (dateRdv),
     PRIMARY KEY(id_rdv,id_patient)
 );
 

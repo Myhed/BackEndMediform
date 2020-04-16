@@ -34,7 +34,7 @@ DELIMITER |
                 INNER JOIN (`MEDECINS`,`AFFILE`)
                 ON `MEDECINS`.`id_medecin` = `AFFILE`.`id_medecin`
                 AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
-                WHERE DATE_FORMAT(`AFFILE`.`dateAffiliation`, '%Y-%m-%d %H:%i') = DATE_FORMAT(`PREND`.`dateRdv`, '%Y-%m-%d %H:%i');
+                WHERE `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`;
             COMMIT;
     END;
     CREATE PROCEDURE P_getAllRdvToday()
@@ -50,6 +50,7 @@ DELIMITER |
                 INNER JOIN (`MEDECINS`,`AFFILE`)
                 ON `MEDECINS`.`id_medecin` = `AFFILE`.`id_medecin`
                 AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
+                AND `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`
                 WHERE DATE(`PREND`.`dateRdv`) = CURRENT_DATE();
             COMMIT;
     END;
@@ -67,10 +68,9 @@ DELIMITER |
             ON `RDV`.`id_rdv` = `PREND`.`id_rdv`
             AND `PATIENTS`.`id_patient` = `PREND`.`id_patient`
             INNER JOIN (`MEDECINS`,`AFFILE`)
-            ON `MEDECINS`.`id_medecin` = `AFFILE`.`id_medecin`
-            AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
-            WHERE DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE()
-            AND `MEDECINS`.`id_medecin` = id_medecin;
+            ON `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
+            AND `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`
+            WHERE`MEDECINS`.`id_medecin` = id_medecin;
           COMMIT;
     END;
     CREATE PROCEDURE P_getRdvMedecinTodayById(IN id_medecin INT)
@@ -87,10 +87,10 @@ DELIMITER |
             ON `RDV`.`id_rdv` = `PREND`.`id_rdv`
             AND `PATIENTS`.`id_patient` = `PREND`.`id_patient`
             INNER JOIN (`MEDECINS`,`AFFILE`)
-            ON `MEDECINS`.`id_medecin` = `AFFILE`.`id_medecin`
-            AND `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
-            WHERE DATE(`PREND`.`dateRDV`) = CURRENT_DATE()
-            AND `MEDECINS`.`id_medecin` = id_medecin;
+            ON  `PATIENTS`.`id_patient` = `AFFILE`.`id_patient`
+            AND `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`
+            WHERE `MEDECINS`.`id_medecin` = id_medecin
+            AND DATE(`PREND`.`dateRDV`) = CURRENT_DATE();
           COMMIT;
     END;
         
@@ -104,16 +104,15 @@ DELIMITER |
           END IF;
 
           START TRANSACTION;  
-            SELECT `RDV`.`sujetConsultation`,`RDV`.`typeRdv`,`PREND`.`dateRdv`,
-            `MEDECINS`.`nom` AS `nomMedecin` ,`MEDECINS`.`prenom` AS `prenomMedecin` 
-            FROM `RDV` INNER JOIN (`PREND`,`PATIENTS`)
-            ON `PREND`.`id_rdv` = `RDV`.`id_rdv` 
+            SELECT `RDV`.`sujetConsultation`,DATE_FORMAT(`PREND`.`dateRdv`,'%Y-%m-%d %H:%i'),`MEDECINS`.`nom`,`MEDECINS`.`prenom`
+            FROM `RDV` INNER JOIN(`PREND`,`PATIENTS`)
+            ON `PREND`.`id_rdv` = `RDV`.`id_rdv`
             AND `PREND`.`id_patient` = `PATIENTS`.`id_patient`
-            INNER JOIN (`MEDECINS`,`AFFILE`)
+            INNER JOIN(`AFFILE`,`MEDECINS`)
             ON `AFFILE`.`id_medecin` = `MEDECINS`.`id_medecin`
-            AND `AFFILE`.`id_patient` = `PATIENTS`.`id_patient`
-            WHERE DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE() 
-            AND `PATIENTS`.`id_patient` = id_patient;
+            AND `AFFILE`.`dateAffiliation` = `PREND`.`dateRdv`
+            WHERE `PATIENTS`.`id_patient` = 1
+            AND DATE(`AFFILE`.`dateAffiliation`) >= CURRENT_DATE();
           COMMIT;
     END;
     -- les tables concernet MEDECINS  ====> AFFILE <===== PATIENTS ====> PREND <===== RDV
@@ -125,14 +124,26 @@ DELIMITER |
       IN sujetConsultation VARCHAR(255),
       IN serviceHopital VARCHAR(255)
     )
-        NOT DETERMINISTIC
+        DETERMINISTIC
         BEGIN
           DECLARE lastInsertIdRdv INT DEFAULT NULL;
           DECLARE idMedecin INT DEFAULT NULL;
-          DECLARE dateRdv DATETIME DEFAULT NULL;
+          DECLARE dateRdv BIGINT DEFAULT NULL;
+          DECLARE dateFinAffiliation BIGINT DEFAULT NULL;
+          DECLARE x BIGINT DEFAULT NULL;
 
-          SET idMedecin = F_getIdMedecinByHisProfession(serviceHopital);
-          SET dateRdv = ADDTIME(NOW(),3 * 1000);
+          SET idMedecin = F_getIdMedecinAvailableByHisProfession(serviceHopital);
+
+          SET dateRdv = F_transformDateToUnixTimestamp(NOW());
+          SET dateFinAffiliation = F_transformDateToUnixTimestamp(ADDTIME(NOW(),1.5 * 1000));
+          IF(F_getNotExceededDateMedecin(idMedecin)) THEN
+            SET x = F_getNotExceededDateMedecin(idMedecin);
+            SET dateRdv = x;
+            SELECT dateRdv;
+            SET dateFinAffiliation = F_transformDateToUnixTimestamp(ADDTIME(F_fromUnixTimestampDate(x),1.5 * 1000));
+            SELECT dateFinAffiliation;
+          END IF;
+
           START TRANSACTION;
             INSERT INTO `RDV` (`id_rdv`,`nomHopital`,`typeRdv`,`adresse`,`sujetConsultation`)
             VALUES(null,nomHopital,typeRdv,adresse,sujetConsultation);
@@ -140,8 +151,8 @@ DELIMITER |
             INSERT INTO `PREND` (`id_rdv`,`id_patient`,`dateRdv`)
             VALUES(lastInsertIdRdv,id_patient,dateRdv);
 
-            INSERT INTO `AFFILE` (`id_affiliation`,`id_medecin`,`id_patient`,`dateAffiliation`)
-            VALUES(null,idMedecin,id_patient,dateRdv);
+            INSERT INTO `AFFILE` (`id_affiliation`,`id_medecin`,`id_patient`,`dateAffiliation`,`dateFinAffiliation`)
+            VALUES(null,idMedecin,id_patient,dateRdv,dateFinAffiliation);
           COMMIT;
           SELECT idMedecin;
 END |
