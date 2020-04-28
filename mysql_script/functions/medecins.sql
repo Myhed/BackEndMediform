@@ -2,6 +2,7 @@ DROP FUNCTION IF EXISTS F_getMedecinById;
 DROP FUNCTION IF EXISTS F_getIdMedecinAvailableByHisProfession;
 DROP FUNCTION IF EXISTS F_getDateMedecinSmaller;
 DROP FUNCTION IF EXISTS F_getNotExceededDateMedecin;
+DROP FUNCTION IF EXISTS F_insertPatientUser;
 DELIMITER |
     CREATE FUNCTION F_getMedecinById(id_medecin INT)
       RETURNS JSON
@@ -86,4 +87,17 @@ DELIMITER |
         ELSE
           RETURN dateMedecin;
         END IF;
+    END;
+    CREATE FUNCTION F_insertPatientUser(nom VARCHAR(255), prenom VARCHAR(255), email VARCHAR(255), password VARCHAR(255))
+      RETURNS INT
+      DETERMINISTIC
+      LANGUAGE SQL
+      BEGIN
+        DECLARE id_patient_insert INT DEFAULT NULL;
+        INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`adresse`, `dateNaissance`, `email`, `password`, `confirm`) 
+        VALUES(null, nom, prenom, null, null, null, null, email, password);
+        
+        SET id_patient_insert = LAST_INSERT_ID();
+
+        RETURN id_patient_insert;
 END |
