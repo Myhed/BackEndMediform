@@ -21,7 +21,7 @@ DELIMITER |
             COMMIT;
     END;
 
-    CREATE PROCEDURE P_insertPatient(IN nom VARCHAR(255), IN prenom VARCHAR(255), IN ville VARCHAR(255), IN tel VARCHAR(255), IN adresse VARCHAR(255))
+    CREATE PROCEDURE P_insertPatient(IN nom VARCHAR(255), IN prenom VARCHAR(255), IN ville VARCHAR(255), IN tel VARCHAR(255), IN adresse VARCHAR(255),IN dateNaissance DATE)
         DETERMINISTIC
         BEGIN
         DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -54,8 +54,11 @@ DELIMITER |
             IF(adresse = "") THEN
              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
+            IF(dateNaissance = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "dateNaissance MUST BE VARCHAR TYPE AND NOT EMPTY";
+            END IF;
           END IF;
-          INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`adresse`) VALUES(null, nom, prenom, ville, tel, adresse);
+          INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`adresse`) VALUES(null, nom, prenom, ville, tel, adresse,dateNaissance);
         COMMIT;
 
 END |
