@@ -15,7 +15,7 @@ patientRouter.get('/patients', async (req:CustomRequest,res: Response) => {
 })
 
 patientRouter.get('/patient/:idPatient', async (req:CustomRequest,res: Response) => {
-    const {idPatient} = req.params
+    const { idPatient } = req.params
     const medecin = await mysqlPromiseQuery(req.db,`CALL P_getPatientById('${idPatient}')`)
     res.status(200).send(JSON.stringify(medecin))
 })
