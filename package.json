@@ -25,8 +25,8 @@
     "functionAffile": "mysql -u root -p mediform < ./mysql_script/functions/affile.sql",
     "functionGeneral": "mysql -u root -p mediform < ./mysql_script/functions/generic.sql",
     "allTestFunctions": "npm run testFunctionMedecins",
-    "allProcedure": "npm run procedurePatients && npm run procedureToken && npm run procedureMedecins && npm run procedureRdvs && npm run procedureAffile",
-    "allFunction": "npm run functionGeneral && npm run functionMedecins && npm run functionAffile",
+    "allProcedure": "npm run procedurePatients && npm run procedureMedecins && npm run procedureRdvs && npm run procedureAffile",
+    "allFunction": "npm run functionToken && npm run functionGeneral && npm run functionMedecins && npm run functionAffile",
     "allFakeData": "npm run fakeDataPatients && npm run fakeDataMedecins && npm run fakeDataAffile && npm run fakeDataRdv && npm run fakeDataPrend",
     "integrateDatabase": "npm run Bdd && npm run allFunction && npm run allProcedure && npm run allTestFunctions && npm run allFakeData",
     "start:dev": "ts-node app.ts"

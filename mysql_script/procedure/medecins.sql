@@ -20,9 +20,18 @@ DELIMITER |
             COMMIT;
         END;
 
-    CREATE PROCEDURE P_insertMedecin(IN nom VARCHAR(255), IN prenom VARCHAR(255), IN ville VARCHAR(255), IN profession VARCHAR(255), IN adresse VARCHAR(255))
+    CREATE PROCEDURE P_insertMedecin(
+        IN nom VARCHAR(255),
+        IN prenom VARCHAR(255), 
+        IN ville VARCHAR(255), 
+        IN profession VARCHAR(255), 
+        IN adresse VARCHAR(255), 
+        IN tel VARCHAR(255), 
+        IN email VARCHAR(255))
         DETERMINISTIC
         BEGIN
+        DECLARE lastInsertMedecin INT DEFAULT NULL;
+        DECLARE keyConnexion_login BLOB DEFAULT NULL;
         DECLARE EXIT HANDLER FOR SQLEXCEPTION
             BEGIN
                 ROLLBACK;
@@ -35,8 +44,10 @@ DELIMITER |
               (prenom is NULL)     AND 
               (nom is NULL)        AND
               (profession is NULL) AND 
-              (adresse is NULL)
-              ) THEN
+              (adresse is NULL)    AND
+              (tel is NULL)        AND
+              (email is NULL)      AND
+            ) THEN
               SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "PARAMS MUST NOT BE NULL";
           ELSE
             IF (nom = "") THEN
@@ -54,8 +65,20 @@ DELIMITER |
             IF(adresse = "") THEN
              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "adresse MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
+            IF(tel = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "tel MUST BE VARCHAR TYPE AND NOT EMPTY";
+            END IF;
+            IF(email = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "email MUST BE VARCHAR TYPE AND NOT EMPTY";
+            END IF;
           END IF;
-          INSERT INTO `MEDECINS` (`id_medecin`,`nom`,`prenom`,`ville`,`profession`,`adresse`) VALUES(null, nom, prenom, ville, profession, adresse);
+          INSERT INTO `MEDECINS` (`id_medecin`,`nom`,`prenom`,`ville`,`profession`,`adresse`,`tel`,`email`) 
+          VALUES(null, nom, prenom, ville, profession, adresse, tel, email);
+          SET lastInsertMedecin = LAST_INSERT_ID();
+          SET keyConnexion_login = F_createToken(16);
+          SELECT keyConnexion_login;
+          INSERT INTO `LOGIN_MEDECIN` (`id_login`,`id_patient`,`keyConnexion`)
+          VALUES(null,lastInsertMedecin,keyConnexion_login);
         COMMIT;
     END;
     CREATE PROCEDURE P_verifyIsStillInRdv(IN dateAffiliation DATETIME)
@@ -67,5 +90,4 @@ DELIMITER |
         END IF;
         SET isInRdv = F_verifyDateIsExceed(dateAffiliation);
         SELECT isInRdv;
-        
 END |

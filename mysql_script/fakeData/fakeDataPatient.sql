@@ -1,2 +1,2 @@
-INSERT INTO `PATIENTS` (id_patient,nom,prenom,ville,tel,adresse,dateNaissance) VALUES(null,'Ben-Rhouma','Myhed','Asnière-sur-seine','0621198058','2 Rue charles linnée','1996-10-31');
-INSERT INTO `PATIENTS`  (id_patient,nom,prenom,ville,tel,adresse,dateNaissance) VALUES(null,'Grumelon','Dylan','Fontenay-aux-rose','0640606927','1 Rue charles linnée','1996-10-31');
+INSERT INTO `PATIENTS` (id_patient,nom,prenom,ville,tel,email,adresse,dateNaissance) VALUES(null,'Ben-Rhouma','Myhed','Asnière-sur-seine','0621198058','titi@gmail.com','2 Rue charles linnée','1996-10-31');
+INSERT INTO `PATIENTS`  (id_patient,nom,prenom,ville,tel,email,adresse,dateNaissance) VALUES(null,'Grumelon','Dylan','Fontenay-aux-rose','0640606927','toto@gmail.com','1 Rue charles linnée','1996-10-31');

@@ -21,9 +21,18 @@ DELIMITER |
             COMMIT;
     END;
 
-    CREATE PROCEDURE P_insertPatient(IN nom VARCHAR(255), IN prenom VARCHAR(255), IN ville VARCHAR(255), IN tel VARCHAR(255), IN adresse VARCHAR(255),IN dateNaissance DATE)
+    CREATE PROCEDURE P_insertPatient(
+        IN nom VARCHAR(255), 
+        IN prenom VARCHAR(255), 
+        IN ville VARCHAR(255), 
+        IN tel VARCHAR(255), 
+        IN adresse VARCHAR(255),
+        IN dateNaissance DATE, 
+        IN email VARCHAR(255))
         DETERMINISTIC
         BEGIN
+        DECLARE lastInsertPatient INT DEFAULT NULL;
+        DECLARE keyConnexion_login BLOB DEFAULT NULL;
         DECLARE EXIT HANDLER FOR SQLEXCEPTION
             BEGIN
                 ROLLBACK;
@@ -35,7 +44,9 @@ DELIMITER |
               (prenom is NULL) AND 
               (nom is NULL)    AND
               (tel is NULL)    AND 
-              (adresse is NULL)
+              (adresse is NULL) AND
+              (email is NULL) AND
+              (dateNaissance is NULL)
               ) THEN
               SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "PARAMS MUST NOT BE NULL";
           ELSE
@@ -57,8 +68,17 @@ DELIMITER |
             IF(dateNaissance = "") THEN
              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "dateNaissance MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
+            IF(email = "") THEN
+             SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "email MUST BE VARCHAR TYPE AND NOT EMPTY";
+            END IF;
           END IF;
-          INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`adresse`) VALUES(null, nom, prenom, ville, tel, adresse,dateNaissance);
+          INSERT INTO `PATIENTS` (`id_patient`,`nom`,`prenom`,`ville`,`tel`,`email`,`adresse`,`dateNaissance`) 
+          VALUES(null, nom, prenom, ville, tel, email, adresse, dateNaissance);
+          SET lastInsertPatient = LAST_INSERT_ID();
+          SET keyConnexion_login = F_createToken(16);
+          SELECT keyConnexion_login;
+          INSERT INTO `LOGIN_PATIENT` (`id_login`,`id_patient`,`keyConnexion`)
+          VALUES(null,lastInsertPatient,keyConnexion_login);
         COMMIT;
 
 END |

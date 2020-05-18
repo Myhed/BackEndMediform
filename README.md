@@ -8,7 +8,7 @@ There are three endpoints on mediform you can observe it on router folder `patie
 
  * `GET /patients` => get all patients
  * `GET /patient/:idPatient` => get a specifique patient with id
- * `POST /patient params` **`{nom,prenom,ville,tel,adresse,dateNaissance}`** insert a new patient
+ * `POST /patient params` **`{ nom,prenom,ville,tel,email,adresse,dateNaissance }`** insert a new patient
 
  ```sh
 [user@user BackEndMediform]$ curl -XPOST -H "Content-Type: application/json" -d '{"nom":"toto","prenom":"titi","ville":"1 rue carambar","tel":"06258569","adresse":"1 rue charle vincent","dateNaissance":"1996-10-31"}' http://localhost:8000/mediform/patient
@@ -18,7 +18,7 @@ There are three endpoints on mediform you can observe it on router folder `patie
 
 * `GET /medecins`
 * `GET /medecin/:idMedecin`
-* `POST /medecins params`**`{nom,prenom,ville,profession,adresse}`**
+* `POST /medecins params`**`{ nom,prenom,ville,profession,adresse,tel,email }`**
 
 you can make a curl request looks like this
 

@@ -4,6 +4,7 @@ import { CustomRequest } from '../interfaces/request'
 import { verifyNewMedecinInsertMiddleware } from '../middleware/medecin'
 import { httpLogger } from '../utils/logger'
 import { mysqlPromiseQuery } from '../utils/mysql-promise'
+
 const medecinRouter: express.Router = express.Router()
 // --- Middleware POST
 medecinRouter.use('/medecin', verifyNewMedecinInsertMiddleware)
@@ -22,8 +23,8 @@ medecinRouter.get('/medecin/:idMedecin', async (req:CustomRequest,res: Response)
 })
 
 medecinRouter.post('/medecin', async (req: CustomRequest, res: Response) => {
-    const { nom,prenom,ville,profession,adresse } = req.body
-    await mysqlPromiseQuery(req.db,`CALL P_insertMedecin('${nom}','${prenom}','${ville}','${profession}','${adresse}')`)
+    const { nom,prenom,ville,profession,adresse, tel, email } = req.body
+    await mysqlPromiseQuery(req.db,`CALL P_insertMedecin('${nom}','${prenom}','${adresse}','${tel}','${email}','${ville}','${profession}')`)
     res.status(200).send('resource created successfully')
     httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('info', `With body ${JSON.stringify(req.body)}`)
 })

@@ -8,28 +8,47 @@ DROP TABLE IF EXISTS AFFILE;
 DROP TABLE IF EXISTS RDV;
 DROP TABLE IF EXISTS PREND;
 DROP TABLE IF EXISTS FORMULAIRE;
+DROP TABLE IF EXISTS LOGIN_PATIENT;
+DROP TABLE IF EXISTS LOGIN_MEDECIN;
 
 CREATE TABLE PATIENTS(
     id_patient INT(255) AUTO_INCREMENT,
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
     ville VARCHAR(255) not null,
-    tel VARCHAR(255) not null UNIQUE,
-    adresse VARCHAR(255) not null UNIQUE,
+    tel VARCHAR(255) not null,
+    email VARCHAR(255) not null,
+    adresse VARCHAR(255) not null,
     dateNaissance DATE not null,
     dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_patient)
+);
+
+CREATE TABLE LOGIN_PATIENT(
+    id_login INT(255) AUTO_INCREMENT PRIMARY KEY,
+    id_patient INT(255) not null,
+    keyConnexion BLOB not null,
+    CONSTRAINT `fk_id_patient_login` FOREIGN KEY(id_patient) REFERENCES PATIENTS(`id_patient`)
 );
 
 CREATE TABLE MEDECINS(
     id_medecin INT(255) AUTO_INCREMENT,
     nom VARCHAR(255) not null,
     prenom VARCHAR(255) not null,
-    adresse VARCHAR(255) not null UNIQUE,
+    adresse VARCHAR(255) not null,
+    tel VARCHAR(255) not null,
+    email VARCHAR(255) not null,
     ville VARCHAR(255) not null,
     profession VARCHAR(255) not null,
     dateTimestamp BIGINT UNSIGNED DEFAULT UNIX_TIMESTAMP(),
     PRIMARY KEY(id_medecin)
+);
+
+CREATE TABLE LOGIN_MEDECIN(
+    id_login INT(255) AUTO_INCREMENT PRIMARY KEY,
+    id_medecin INT(255) not null,
+    keyConnexion BLOB not null,
+    CONSTRAINT `fk_id_medecin_login` FOREIGN KEY(id_medecin) REFERENCES MEDECINS(`id_medecin`)
 );
 
 CREATE TABLE AFFILE(
