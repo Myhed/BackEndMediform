@@ -3,6 +3,7 @@ import { Request,Response } from 'express'
 import { CustomRequest } from '../interfaces/request'
 import { mysqlPromiseQuery } from '../utils/mysql-promise'
 import { httpLogger } from '../utils/logger'
+
 const rdvRouter: express.Router = express.Router()
 
 rdvRouter.get('/rdv', async (req:CustomRequest,res: Response) => {

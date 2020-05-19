@@ -1,6 +1,8 @@
 DROP PROCEDURE IF EXISTS P_getPatientById;
 DROP PROCEDURE IF EXISTS P_getAllPatients;
 DROP PROCEDURE IF EXISTS P_insertPatient;
+DROP PROCEDURE IF EXISTS P_loginPatient;
+DROP PROCEDURE IF EXISTS P_verifyLoginByMac;
 
 DELIMITER |
 
@@ -15,6 +17,9 @@ DELIMITER |
         END;
     
     CREATE PROCEDURE P_getAllPatients()
+        DETERMINISTIC
+        LANGUAGE SQL
+        READS SQL DATA
         BEGIN
             START TRANSACTION;
                 SELECT * FROM `PATIENTS`;
@@ -80,5 +85,36 @@ DELIMITER |
           INSERT INTO `LOGIN_PATIENT` (`id_login`,`id_patient`,`keyConnexion`)
           VALUES(null,lastInsertPatient,keyConnexion_login);
         COMMIT;
+    END;
 
+CREATE PROCEDURE P_loginPatient(IN email VARCHAR(255))
+    DETERMINISTIC
+    LANGUAGE SQL
+    READS SQL DATA
+    BEGIN
+      DECLARE id_patient INT DEFAULT NULL;
+      DECLARE tokenPatient VARBINARY(512) DEFAULT NULL;
+      DECLARE macPatient VARBINARY(512) DEFAULT NULL;
+        SET id_patient = F_getidByEmailPatient(email);
+        SET tokenPatient = F_getTokenByIdPatient(id_patient);
+        SET macPatient = HEX(F_xorKey(tokenPatient,42));
+        SELECT macPatient;
+    END;
+CREATE PROCEDURE P_verifyLoginByMac(IN mac VARCHAR(255))
+    DETERMINISTIC
+    LANGUAGE SQL
+    BEGIN
+    DECLARE tokenPatientGiven VARBINARY(512) DEFAULT NULL;
+    DECLARE macPatientGiven VARBINARY(512) DEFAULT NULL;
+    DECLARE tokenPatient VARBINARY(512) DEFAULT NULL;
+
+    SET macPatientGiven = UNHEX(mac);
+    SET tokenPatientGiven = F_xorKey(macPatientGiven,42);
+
+    SELECT `keyConnexion` INTO tokenPatient FROM `LOGIN_PATIENT` WHERE `keyConnexion` = tokenPatientGiven;
+    IF(tokenPatient = tokenPatientGiven) THEN
+        SELECT 1 as `auth`;
+    ELSE
+        SELECT 0 as `auth`;
+    END IF;
 END |

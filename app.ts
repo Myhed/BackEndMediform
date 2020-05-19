@@ -3,11 +3,14 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import cors = require('cors')
 import express = require('express')
-import { authentification } from './middleware/authentification'
+import { verifyMacClient, isAuthent } from './middleware/authentification'
+// import { CustomRequest } from './interfaces/request'
+// import { Request, Response, NextFunction } from 'express'
 import { createConnection } from './middleware/initDatabase'
 import { initLoggerMiddleware } from './middleware/logger'
-import { medecinRouter,patientRouter,rdvRouter } from './router'
+import { medecinRouter, patientRouter, rdvRouter, rootRooter } from './router'
 import { httpLogger, logger } from './utils/logger'
+// import { mysqlPromiseQuery } from './utils/mysql-promise'
 // Middleware global
 const app: express.Application = express()
 
@@ -21,23 +24,21 @@ app.use(cookieParser.default())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(initLoggerMiddleware)
+
+
 // app.use(authentification)
 // ----- FIN Middleware global ------
 
 // Router Mediform
-app.use('/mediform',patientRouter)
-app.use('/mediform',medecinRouter)
-app.use('/mediform',rdvRouter)
+app.use('/mediform',isAuthent,verifyMacClient,patientRouter)
+app.use('/mediform',isAuthent,verifyMacClient,medecinRouter)
+app.use('/mediform',isAuthent,verifyMacClient,rdvRouter)
+app.use('/',rootRooter)
 // ------ Fin Router esport ------
 
-// login mediform
-// app.use('/esport', login)
-
+// login mediform 
 // ------ Fin login mediform ------
 
-app.get('/',(req,res) => {
-  res.send('Welcom to the apis HIA')
-})
 
 app.get(['/*','/mediform/*'],(req,res) => {
   res.status(404).send('Resource Not Found')

@@ -17,13 +17,13 @@ medecinRouter.get('/medecins',async (req:CustomRequest,res: Response) => {
 })
 
 medecinRouter.get('/medecin/:idMedecin', async (req:CustomRequest,res: Response) => {
-    const {idMedecin} = req.params
+    const { idMedecin } = req.params
     const medecin = await mysqlPromiseQuery(req.db,`CALL P_getMedecinById('${idMedecin}')`)
     res.status(200).send(JSON.stringify(medecin))
 })
 
 medecinRouter.post('/medecin', async (req: CustomRequest, res: Response) => {
-    const { nom,prenom,ville,profession,adresse, tel, email } = req.body
+    const { nom, prenom, ville, profession, adresse, tel, email } = req.body
     await mysqlPromiseQuery(req.db,`CALL P_insertMedecin('${nom}','${prenom}','${adresse}','${tel}','${email}','${ville}','${profession}')`)
     res.status(200).send('resource created successfully')
     httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('info', `With body ${JSON.stringify(req.body)}`)

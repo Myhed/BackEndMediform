@@ -22,7 +22,7 @@ patientRouter.get('/patient/:idPatient', async (req:CustomRequest,res: Response)
 
 patientRouter.post('/patient', async (req: CustomRequest, res: Response) => {
     const { nom, prenom, ville, tel, email, adresse, dateNaissance } = req.body
-    await mysqlPromiseQuery(req.db,`CALL P_insertMedecin('${nom}','${prenom}','${adresse}','${ville}','${dateNaissance}')`)
+    await mysqlPromiseQuery(req.db,`CALL P_insertPatient('${nom}','${prenom}','${ville}','${tel}','${email}','${adresse}','${dateNaissance}')`)
     res.status(200).send('resource created successfully')
     httpLogger({method:req.method,originalUrl: req.url, statusCode: res.statusCode}).log('info', `With body ${JSON.stringify(req.body)}`)
 })
