@@ -98,23 +98,22 @@ CREATE PROCEDURE P_loginPatient(IN email VARCHAR(255))
         SET id_patient = F_getidByEmailPatient(email);
         SET tokenPatient = F_getTokenByIdPatient(id_patient);
         SET macPatient = HEX(F_xorKey(tokenPatient,42));
-        SELECT macPatient;
+        SELECT macPatient as `macPatient`, HEX(tokenPatient) as `tokenPatient`;
     END;
-CREATE PROCEDURE P_verifyLoginByMac(IN mac VARCHAR(255))
+CREATE PROCEDURE P_verifyLoginByMac(IN mac VARCHAR(255), IN token VARCHAR(255))
     DETERMINISTIC
     LANGUAGE SQL
+    CONTAINS SQL
     BEGIN
     DECLARE tokenPatientGiven VARBINARY(512) DEFAULT NULL;
     DECLARE macPatientGiven VARBINARY(512) DEFAULT NULL;
-    DECLARE tokenPatient VARBINARY(512) DEFAULT NULL;
+    DECLARE isGoodKeyPairs BOOLEAN DEFAULT 0;
 
+    SET tokenPatientGiven = UNHEX(token);
     SET macPatientGiven = UNHEX(mac);
-    SET tokenPatientGiven = F_xorKey(macPatientGiven,42);
 
-    SELECT `keyConnexion` INTO tokenPatient FROM `LOGIN_PATIENT` WHERE `keyConnexion` = tokenPatientGiven;
-    IF(tokenPatient = tokenPatientGiven) THEN
-        SELECT 1 as `auth`;
-    ELSE
-        SELECT 0 as `auth`;
-    END IF;
+    SET isGoodKeyPairs = F_verifyToken(tokenPatientGiven, macPatientGiven);
+
+    SELECT isGoodKeyPairs as `auth`;
+
 END |

@@ -1,7 +1,7 @@
 DROP FUNCTION IF EXISTS F_createToken;
 DROP FUNCTION IF EXISTS F_xorKey;
 DROP FUNCTION IF EXISTS F_tokenFromMac;
-DROP PROCEDURE IF EXISTS verifyToken;
+DROP FUNCTION IF EXISTS F_verifyToken;
 
 DELIMITER |
 
@@ -37,14 +37,17 @@ DELIMITER |
           RETURN mac;
     END;
 
-    CREATE PROCEDURE verifyToken(IN token VARBINARY(16), IN mac VARBINARY(16))
+    CREATE FUNCTION F_verifyToken(token VARBINARY(16), mac VARBINARY(16))
+      RETURNS INT
       DETERMINISTIC
       LANGUAGE SQL
       CONTAINS SQL
       BEGIN
       IF (token is NOT NULL AND mac is NOT NULL) THEN
         IF (token = F_xorKey(mac,42)) THEN
-          SELECT 1;
+          RETURN 1;
+        ELSE
+          RETURN 0;
         END IF;
       END IF;
 END |

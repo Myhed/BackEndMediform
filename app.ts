@@ -6,6 +6,7 @@ import express = require('express')
 import { verifyMacClient, isAuthent } from './middleware/authentification'
 // import { CustomRequest } from './interfaces/request'
 // import { Request, Response, NextFunction } from 'express'
+import * as session from 'express-session'
 import { createConnection } from './middleware/initDatabase'
 import { initLoggerMiddleware } from './middleware/logger'
 import { medecinRouter, patientRouter, rdvRouter, rootRooter } from './router'
@@ -18,13 +19,13 @@ app.use((req, res, next) => {
   res.setHeader('X-Powered-By', 'HIA')
   next()
 })
+
 app.use(createConnection)
 app.use(cors())
 app.use(cookieParser.default())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(initLoggerMiddleware)
-
 
 // app.use(authentification)
 // ----- FIN Middleware global ------

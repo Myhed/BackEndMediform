@@ -6,19 +6,19 @@ export function authentification(req: Request ,res: Response,next: NextFunction)
 }
 
 export async function verifyMacClient(req: CustomRequest,res: Response, next: NextFunction){
-    const authent = await mysqlPromiseQuery(req.db, `CALL P_verifyLoginByMac('${req.cookies.keyConnexion}')`);
+    const authent = await mysqlPromiseQuery(req.db, `CALL P_verifyLoginByMac('${req.cookies.mac}','${req.cookies.sessionToken}')`);
     if(authent[0][0].auth === 0){
-        const error = new Error('UnAuthorized invalide mac')
+        const error = new Error('UnAuthorized invalide token')
         next({ message: error.message, code: 401 })
     }
     next();
 }
 
 export function isAuthent(req: Request,res: Response, next: NextFunction) {
-    console.log(req.cookies);
-    if(typeof req.cookies.keyConnexion === "undefined"){
-        const error = new Error('UnAuthorized you need to give keyConnexion')
-        next({ message: error.message, code:401 })
+    console.log(req.cookies.mac);
+    if(typeof req.cookies.mac === "undefined" || typeof req.cookies.sessionToken === "undefined"){
+        const error = new Error('UnAuthorized have no key pairs session')
+        next({ message: error.message, code:401 }) 
     }else{
         next()
     }
