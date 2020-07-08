@@ -46,10 +46,10 @@ DELIMITER |
               (profession is NULL) AND 
               (adresse is NULL)    AND
               (tel is NULL)        AND
-              (email is NULL)      AND
+              (email is NULL)
             ) THEN
               SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20020, MESSAGE_TEXT = "PARAMS MUST NOT BE NULL";
-          ELSE
+          ELSE 
             IF (nom = "") THEN
              SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20010, MESSAGE_TEXT = "nom MUST BE VARCHAR TYPE AND NOT EMPTY";
             END IF;
